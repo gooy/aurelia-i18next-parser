@@ -58,6 +58,7 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
           this.keySeparator = ".";
           this.regex = null;
           this.appPath = null;
+          this.localesPath = "src/locales";
           this.routesModuleId = "routes";
           this.locales = ["en-US"];
           this.defaultLocale = "en";
@@ -273,9 +274,12 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
               var namespacePath = namespace + ".json";
               var namespaceOldPath = namespace + "_old.json";
 
-              if (fs.existsSync(namespacePath)) {
+              var basePath = process.cwd() + "/" + this.localesPath + "/" + locale + "/";
+              if (this.verbose) gutil.log("basePath", basePath);
+
+              if (fs.existsSync(basePath + namespacePath)) {
                 try {
-                  currentTranslations = JSON.parse(fs.readFileSync(namespacePath));
+                  currentTranslations = JSON.parse(fs.readFileSync(basePath + namespacePath));
                 } catch (error) {
                   this.emit("json_error", error.name, error.message);
                   currentTranslations = {};
@@ -284,9 +288,9 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
                 currentTranslations = {};
               }
 
-              if (fs.existsSync(namespaceOldPath)) {
+              if (fs.existsSync(basePath + namespaceOldPath)) {
                 try {
-                  oldTranslations = JSON.parse(fs.readFileSync(namespaceOldPath));
+                  oldTranslations = JSON.parse(fs.readFileSync(basePath + namespaceOldPath));
                 } catch (error) {
                   this.emit("json_error", error.name, error.message);
                   currentTranslations = {};

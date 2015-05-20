@@ -71,11 +71,8 @@ System.register([], function (_export) {
         if (typeof source[key] === 'object') {
           target[key] = replaceEmpty(source[key], target[key], transform);
         } else if (target[key] === '') {
-
           var value = source[key];
-
           if (transform === 'uppercase') value = transformText(value);
-
           target[key] = value;
         }
       }
