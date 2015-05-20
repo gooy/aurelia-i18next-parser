@@ -8,11 +8,11 @@ var compilerOptions = require('../babel-options');
 var assign = Object.assign || require('object.assign');
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
-
+var ncp = require('ncp').ncp;
 var dirs = gulp.pkg.directories;
 
 /**
- * Transpile es6 code into the dist directory
+ * Transpile es6 code into the dist directory as systemjs
  */
 gulp.task('build-system', function () {
   return gulp.src(dirs.lib+"/**/*.js")
@@ -25,7 +25,7 @@ gulp.task('build-system', function () {
 });
 
 /**
- * Transpile es6 code into the dist directory
+ * Transpile es6 code into the dist directory as commonjs
  */
 gulp.task('build-commonjs', function () {
   return gulp.src(dirs.lib+"/**/*.js")
@@ -37,15 +37,27 @@ gulp.task('build-commonjs', function () {
   .pipe(gulp.dest(dirs.build+"/commonjs"));
 });
 
+/**
+ * Transpile es6 code into the dist directory as amd
+ */
 gulp.task('build-amd', function () {
-  return gulp.src(dirs.lib)
+  return gulp.src(dirs.lib+"/**/*.js")
+  .pipe(plumber())
+  .pipe(changed(dirs.build, {extension: '.js'}))
+  .pipe(sourcemaps.init())
   .pipe(babel(assign({}, compilerOptions, {modules:'amd'})))
-  .pipe(gulp.dest(dirs.build + '/amd'));
+  .pipe(sourcemaps.write("."))
+  .pipe(gulp.dest(dirs.build+"/amd"));
 });
 
-gulp.task('build-es6', function () {
-  return gulp.src(dirs.lib)
-  .pipe(gulp.dest(dirs.build + '/es6'));
+/**
+ * Transpile es6 code into the dist directory as es6
+ */
+gulp.task('build-es6', function (done) {
+  ncp(dirs.lib, dirs.build + '/es6', function (err) {
+    if (err) console.error(err);
+    done();
+  });
 });
 
 /**

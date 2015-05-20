@@ -6,6 +6,8 @@ node_modules
 
 # generated files #
 #######################
+dist/*
+!dist/commonjs
 .publish
 deploy
 docs
