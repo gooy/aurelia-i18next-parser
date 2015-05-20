@@ -1,0 +1,54 @@
+{
+  "name": "aurelia-i18next-parser",
+  "description": "Extracts i18n from html and js files",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Aaike Van Roekeghem <aaikevr@gmail.com>",
+  "keywords": [
+    "gulpplugin",
+    "i18next",
+    "parser",
+    "aurelia"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gooy/aurelia-i18next-parser"
+  },
+  "bugs": {
+    "url": "https://github.com/gooy/aurelia-i18next-parser/issues"
+  },
+  "scripts": {
+    "test": "npm run jshint",
+    "jshint": "jshint index.js gulpfile.js"
+  },
+  "main": "dist/commonjs/index.js",
+  "directories": {
+    "lib": "src",
+    "build": "dist"
+  },
+  "dependencies": {
+    "babel": "^5.2.17",
+    "child-process-promise": "^1.1.0",
+    "core-js": "^0.9.7",
+    "graceful-fs": "^3.0.7",
+    "gulp-util": "~2.2.14",
+    "jquery": "^2.1.4",
+    "lodash": "~2.4.1",
+    "vinyl": "~0.2.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "jshint": "^2.6.3",
+    "jshint-stylish": "^1.0.1"
+  },
+  "jspm": {
+    "dependencies": {
+      "lodash": "npm:lodash@^3.8.0"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.1.13",
+      "babel-runtime": "npm:babel-runtime@^5.1.13",
+      "core-js": "npm:core-js@^0.9.4"
+    }
+  }
+}
