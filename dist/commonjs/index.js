@@ -70,6 +70,7 @@ var Parser = (function () {
     this.keySeparator = ".";
     this.regex = null;
     this.appPath = null;
+    this.localesPath = "src/locales";
     this.routesModuleId = "routes";
     this.locales = ["en-US"];
     this.defaultLocale = "en";
@@ -285,9 +286,12 @@ var Parser = (function () {
         var namespacePath = namespace + ".json";
         var namespaceOldPath = namespace + "_old.json";
 
-        if (_fs2["default"].existsSync(namespacePath)) {
+        var basePath = process.cwd() + "/" + this.localesPath + "/" + locale + "/";
+        if (this.verbose) _gutil2["default"].log("basePath", basePath);
+
+        if (_fs2["default"].existsSync(basePath + namespacePath)) {
           try {
-            currentTranslations = JSON.parse(_fs2["default"].readFileSync(namespacePath));
+            currentTranslations = JSON.parse(_fs2["default"].readFileSync(basePath + namespacePath));
           } catch (error) {
             this.emit("json_error", error.name, error.message);
             currentTranslations = {};
@@ -296,9 +300,9 @@ var Parser = (function () {
           currentTranslations = {};
         }
 
-        if (_fs2["default"].existsSync(namespaceOldPath)) {
+        if (_fs2["default"].existsSync(basePath + namespaceOldPath)) {
           try {
-            oldTranslations = JSON.parse(_fs2["default"].readFileSync(namespaceOldPath));
+            oldTranslations = JSON.parse(_fs2["default"].readFileSync(basePath + namespaceOldPath));
           } catch (error) {
             this.emit("json_error", error.name, error.message);
             currentTranslations = {};

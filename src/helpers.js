@@ -107,13 +107,9 @@ export function replaceEmpty(source, target,transform){
     if(target[key] !== undefined){
       if(typeof source[key] === 'object'){
         target[key] = replaceEmpty(source[key], target[key],transform);
-      }
-      else if(target[key] === ''){
-
+      }else if(target[key] === ''){
         var value = source[key];
-
         if(transform==="uppercase") value = transformText(value);
-
         target[key] = value;
       }
     }
