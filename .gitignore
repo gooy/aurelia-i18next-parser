@@ -6,7 +6,6 @@ node_modules
 
 # generated files #
 #######################
-dist
 .publish
 deploy
 docs
