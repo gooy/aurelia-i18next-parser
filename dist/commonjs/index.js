@@ -55,7 +55,7 @@ var Promise = _corejs2["default"].Promise;
 
 var PluginError = _gutil2["default"].PluginError;
 
-var PLUGIN_NAME = "aurelia-i18next-parse";
+var PLUGIN_NAME = "aurelia-i18next-parser";
 
 var Parser = (function () {
   function Parser(opts) {

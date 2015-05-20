@@ -43,7 +43,7 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
 
       Promise = corejs.Promise;
       PluginError = gutil.PluginError;
-      PLUGIN_NAME = "aurelia-i18next-parse";
+      PLUGIN_NAME = "aurelia-i18next-parser";
 
       Parser = (function () {
         function Parser(opts) {

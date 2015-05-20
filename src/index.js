@@ -15,7 +15,7 @@ var Promise = corejs.Promise;
 
 var PluginError = gutil.PluginError;
 
-const PLUGIN_NAME = "aurelia-i18next-parse";
+const PLUGIN_NAME = "aurelia-i18next-parser";
 
 export class Parser{
 

@@ -7,6 +7,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var compilerOptions = require('../babel-options');
 var assign = Object.assign || require('object.assign');
 var del = require('del');
+var fs = require('graceful-fs');
+var mkdirp = require('mkdirp');
 var vinylPaths = require('vinyl-paths');
 var ncp = require('ncp').ncp;
 var dirs = gulp.pkg.directories;
@@ -54,6 +56,8 @@ gulp.task('build-amd', function () {
  * Transpile es6 code into the dist directory as es6
  */
 gulp.task('build-es6', function (done) {
+  if(!fs.existsSync(dirs.build)) mkdirp.sync(dirs.build);
+
   ncp(dirs.lib, dirs.build + '/es6', function (err) {
     if (err) console.error(err);
     done();
