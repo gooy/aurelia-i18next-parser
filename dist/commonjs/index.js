@@ -335,6 +335,13 @@ var Parser = (function () {
   }, {
     key: "generateAllTranslations",
     value: function generateAllTranslations() {
+      this.updateHashes();
+
+      if (this.verbose) {
+        _gutil2["default"].log("extracted registry:");
+        _gutil2["default"].log(this.registry);
+      }
+
       for (var i = 0, l = this.locales.length; i < l; i++) {
         this.generateTranslation(this.locales[i]);
       }
@@ -344,18 +351,18 @@ var Parser = (function () {
     value: function extractFromApp() {
       var _this3 = this;
 
-      return this.extractor.getNavFromRoutes(this.routesModuleId).then(function (navItems) {
-        if (!navItems) return null;
+      return this.extractor.getNavFromRoutes(this.routesModuleId).then(function (navRoutes) {
+        if (!navRoutes) return null;
 
-        for (var i = 0, l = navItems.length; i < l; i++) {
-          var item = navItems[i];
+        for (var i = 0, l = navRoutes.length; i < l; i++) {
+          var item = navRoutes[i];
           _this3.values[item.i18n] = item.title;
           _this3.registry.push(_this3.defaultNamespace + _this3.keySeparator + item.i18n);
         }
 
         if (_this3.verbose) {
-          _gutil2["default"].log("navItems found:");
-          _gutil2["default"].log(navItems);
+          _gutil2["default"].log("navRoutes found:");
+          _gutil2["default"].log(navRoutes);
         }
 
         return null;
@@ -398,6 +405,28 @@ var Parser = (function () {
       return path.substr(path.lastIndexOf(".") + 1);
     }
   }, {
+    key: "updateHashes",
+    value: function updateHashes() {
+
+      this.translationsHash = {};
+      this.valuesHash = {};
+      this.nodesHash = {};
+
+      var key;
+
+      this.translations = _import2["default"].uniq(this.translations).sort();
+
+      for (key in this.values) {
+        if (!this.values.hasOwnProperty(key)) continue;
+        this.valuesHash = _hashFromString$mergeHash$replaceEmpty$transformText.hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
+      }
+
+      for (key in this.nodes) {
+        if (!this.nodes.hasOwnProperty(key)) continue;
+        this.nodesHash = _hashFromString$mergeHash$replaceEmpty$transformText.hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
+      }
+    }
+  }, {
     key: "transformFile",
     value: function transformFile(file, encoding, cb) {
       var _this5 = this;
@@ -438,29 +467,6 @@ var Parser = (function () {
     key: "flush",
     value: function flush(cb) {
       var _this6 = this;
-
-      if (this.verbose) {
-        _gutil2["default"].log("extracted registry:");
-        _gutil2["default"].log(this.registry);
-      }
-
-      this.translationsHash = {};
-      this.valuesHash = {};
-      this.nodesHash = {};
-
-      var key, i, l;
-
-      this.translations = _import2["default"].uniq(this.translations).sort();
-
-      for (key in this.values) {
-        if (!this.values.hasOwnProperty(key)) continue;
-        this.valuesHash = _hashFromString$mergeHash$replaceEmpty$transformText.hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
-      }
-
-      for (key in this.nodes) {
-        if (!this.nodes.hasOwnProperty(key)) continue;
-        this.nodesHash = _hashFromString$mergeHash$replaceEmpty$transformText.hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
-      }
 
       if (this.extractor) {
         this.extractFromApp().then(function () {

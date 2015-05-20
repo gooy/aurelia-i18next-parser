@@ -48,12 +48,12 @@ var AppExtractor = (function () {
       if (!moduleId) Promise.resolve(null);
 
       return _System2["default"]["import"](moduleId).then(function (m) {
-        var navItems = [];
+        var navRoutes = [];
         for (var i = 0, l = m.routes.length; i < l; i++) {
           var route = m.routes[i];
-          if (route.nav) navItems.push(route.i18n);
+          if (route.nav) navRoutes.push(route);
         }
-        return navItems;
+        return navRoutes;
       });
     }
   }]);

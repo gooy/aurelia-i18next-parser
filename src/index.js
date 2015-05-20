@@ -302,6 +302,13 @@ export class Parser{
    * Generate translations for all locales from the registry
    */
   generateAllTranslations(){
+    this.updateHashes();
+
+    if(this.verbose) {
+      gutil.log('extracted registry:');
+      gutil.log(this.registry);
+    }
+
     for(var i = 0, l = this.locales.length; i < l; i++){
       this.generateTranslation(this.locales[i]);
     }
@@ -313,19 +320,19 @@ export class Parser{
    * @returns {Promise}
    */
   extractFromApp(){
-   return  this.extractor.getNavFromRoutes(this.routesModuleId)
-    .then(navItems=>{
-        if(!navItems) return null;
+   return this.extractor.getNavFromRoutes(this.routesModuleId)
+    .then(navRoutes=>{
+        if(!navRoutes) return null;
 
-        for(var i = 0, l = navItems.length; i < l; i++){
-          var item = navItems[i];
+        for(var i = 0, l = navRoutes.length; i < l; i++){
+          var item = navRoutes[i];
           this.values[item.i18n] = item.title;
           this.registry.push(this.defaultNamespace + this.keySeparator + item.i18n);
         }
 
         if(this.verbose){
-          gutil.log('navItems found:');
-          gutil.log(navItems)
+          gutil.log('navRoutes found:');
+          gutil.log(navRoutes)
         }
 
         return null;
@@ -382,7 +389,31 @@ export class Parser{
     return path.substr(path.lastIndexOf(".") + 1);
   }
 
+  /**
+   * Update hashes.
+   */
+  updateHashes(){
 
+    this.translationsHash = {};
+    this.valuesHash = {};
+    this.nodesHash = {};
+
+    var key;
+
+    // remove duplicate keys
+    this.translations = _.uniq(this.translations).sort();
+
+    //create hash for values
+    for(key in this.values){
+      if(!this.values.hasOwnProperty(key)) continue;
+      this.valuesHash = hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
+    }
+    //create hash for nodes
+    for(key in this.nodes){
+      if(!this.nodes.hasOwnProperty(key)) continue;
+      this.nodesHash = hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
+    }
+  }
 
   //--------- Steam functions
 
@@ -428,31 +459,6 @@ export class Parser{
   }
 
   flush(cb){
-    if(this.verbose) {
-      gutil.log('extracted registry:');
-      gutil.log(this.registry);
-    }
-
-    this.translationsHash = {};
-    this.valuesHash = {};
-    this.nodesHash = {};
-
-    var key,i,l;
-
-    // remove duplicate keys
-    this.translations = _.uniq(this.translations).sort();
-
-    //create hash for values
-    for(key in this.values){
-      if(!this.values.hasOwnProperty(key)) continue;
-      this.valuesHash = hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
-    }
-    //create hash for nodes
-    for(key in this.nodes){
-      if(!this.nodes.hasOwnProperty(key)) continue;
-      this.nodesHash = hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
-    }
-
     //extract values from the aurelia application where possible
     if(this.extractor){
       this.extractFromApp().then(()=>{
@@ -463,7 +469,6 @@ export class Parser{
       this.generateAllTranslations();
       cb();
     }
-
   }
 }
 

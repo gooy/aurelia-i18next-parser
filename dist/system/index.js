@@ -323,6 +323,13 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
         }, {
           key: "generateAllTranslations",
           value: function generateAllTranslations() {
+            this.updateHashes();
+
+            if (this.verbose) {
+              gutil.log("extracted registry:");
+              gutil.log(this.registry);
+            }
+
             for (var i = 0, l = this.locales.length; i < l; i++) {
               this.generateTranslation(this.locales[i]);
             }
@@ -332,18 +339,18 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
           value: function extractFromApp() {
             var _this3 = this;
 
-            return this.extractor.getNavFromRoutes(this.routesModuleId).then(function (navItems) {
-              if (!navItems) return null;
+            return this.extractor.getNavFromRoutes(this.routesModuleId).then(function (navRoutes) {
+              if (!navRoutes) return null;
 
-              for (var i = 0, l = navItems.length; i < l; i++) {
-                var item = navItems[i];
+              for (var i = 0, l = navRoutes.length; i < l; i++) {
+                var item = navRoutes[i];
                 _this3.values[item.i18n] = item.title;
                 _this3.registry.push(_this3.defaultNamespace + _this3.keySeparator + item.i18n);
               }
 
               if (_this3.verbose) {
-                gutil.log("navItems found:");
-                gutil.log(navItems);
+                gutil.log("navRoutes found:");
+                gutil.log(navRoutes);
               }
 
               return null;
@@ -386,6 +393,28 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
             return path.substr(path.lastIndexOf(".") + 1);
           }
         }, {
+          key: "updateHashes",
+          value: function updateHashes() {
+
+            this.translationsHash = {};
+            this.valuesHash = {};
+            this.nodesHash = {};
+
+            var key;
+
+            this.translations = _.uniq(this.translations).sort();
+
+            for (key in this.values) {
+              if (!this.values.hasOwnProperty(key)) continue;
+              this.valuesHash = hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
+            }
+
+            for (key in this.nodes) {
+              if (!this.nodes.hasOwnProperty(key)) continue;
+              this.nodesHash = hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
+            }
+          }
+        }, {
           key: "transformFile",
           value: function transformFile(file, encoding, cb) {
             var _this5 = this;
@@ -426,29 +455,6 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
           key: "flush",
           value: function flush(cb) {
             var _this6 = this;
-
-            if (this.verbose) {
-              gutil.log("extracted registry:");
-              gutil.log(this.registry);
-            }
-
-            this.translationsHash = {};
-            this.valuesHash = {};
-            this.nodesHash = {};
-
-            var key, i, l;
-
-            this.translations = _.uniq(this.translations).sort();
-
-            for (key in this.values) {
-              if (!this.values.hasOwnProperty(key)) continue;
-              this.valuesHash = hashFromString(key, this.values[key], this.keySeparator, this.valuesHash);
-            }
-
-            for (key in this.nodes) {
-              if (!this.nodes.hasOwnProperty(key)) continue;
-              this.nodesHash = hashFromString(key, this.nodes[key], this.keySeparator, this.nodesHash);
-            }
 
             if (this.extractor) {
               this.extractFromApp().then(function () {
