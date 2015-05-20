@@ -1,4 +1,21 @@
-
+/**
+ * Create a hash from a translation key.
+ *
+ * converts "foo.bar.baz" to:
+ *
+ * foo:{
+ *   bar: {
+ *     baz: {
+ *     }
+ *   }
+ * }
+ *
+ * @param path
+ * @param value
+ * @param separator
+ * @param hash
+ * @returns {*|{}}
+ */
 export function hashFromString(path, value, separator, hash){
   separator = separator || '.';
 
@@ -22,11 +39,17 @@ export function hashFromString(path, value, separator, hash){
   return obj;
 }
 
-
-// Takes a `source` hash and make sure its value
-// are pasted in the `target` hash, if the target
-// hash has the corresponding key. If not, the
-// value is added to an `old` hash.
+/**
+ * Takes a `source` hash and make sure its value
+ * are pasted in the `target` hash, if the target
+ * hash has the corresponding key. If not, the
+ * value is added to an `old` hash.
+ *
+ * @param source
+ * @param target
+ * @param old
+ * @returns {{new: (*|{}), old: (*|{})}}
+ */
 export function mergeHash(source, target, old){
   target = target || {};
   old = old || {};
@@ -69,9 +92,14 @@ export function mergeHash(source, target, old){
   };
 }
 
-
-// Takes a `target` hash and replace its empty
-// values with the `source` hash ones if they exist
+/**
+ * Takes a `target` hash and replace its empty
+ * values with the `source` hash ones if they exist
+ * @param source
+ * @param target
+ * @param transform
+ * @returns {*|{}}
+ */
 export function replaceEmpty(source, target,transform){
   target = target || {};
 
@@ -94,6 +122,12 @@ export function replaceEmpty(source, target,transform){
   return target;
 }
 
+/**
+ * Transforms html text to uppercase without transforming tags or attributes
+ *
+ * @param str
+ * @returns {*}
+ */
 export function transformText(str){
   var re = /(.*?(?=<)).*?(?=>)>|(.*)?/gim;
   var m;
@@ -106,14 +140,6 @@ export function transformText(str){
     // eg m[0] etc.
     if(m[1]) str = str.replace(m[1],m[1].toUpperCase());
     if(m[2]) str = str.replace(m[2],m[2].toUpperCase());
-    //console.log(m[0]);
   }
   return str;
 }
-
-// (.*?(?=>)>)?(.*?(?=<\/)(.*?(?=>)>))?
-
-//MATCH TAGS: (<\/?[a-z][a-z0-9]*[^<>]*>)
-//MATCH TAGS: (<\/?[a-z][a-z0-9]*[^<>]*>)
-
-//match all but tags : (.*?(?=<)).*?(?=>)>|(.*)?

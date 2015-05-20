@@ -27,8 +27,8 @@ export class Parser{
   image_src = "data-src";
   keySeparator = ".";
   regex = null;
-  appPath = "routes";
-  routesModuleId = "src";
+  appPath = null;
+  routesModuleId = "routes";
   locales = ['en-US'];
   defaultLocale = "en";
 
@@ -38,7 +38,8 @@ export class Parser{
 
   constructor(opts){
     if(opts) Object.assign(this,opts);
-    this.extractor = new AppExtractor(this.appPath);
+
+    if(this.appPath) this.extractor = new AppExtractor(this.appPath);
   }
 
   parse(){
@@ -115,6 +116,7 @@ export class Parser{
    * Extract translations from html markup.
    *
    * @param window          a jsdom window
+   * @param $               jquery
    * @returns {Array}       extracted keys
    */
   parseDOM(window,$){
@@ -297,6 +299,40 @@ export class Parser{
   }
 
   /**
+   * Generate translations for all locales from the registry
+   */
+  generateAllTranslations(){
+    for(var i = 0, l = this.locales.length; i < l; i++){
+      this.generateTranslation(this.locales[i]);
+    }
+  }
+
+  /**
+   * Extract translations from the Aurelia app.
+   *
+   * @returns {Promise}
+   */
+  extractFromApp(){
+   return  this.extractor.getNavFromRoutes(this.routesModuleId)
+    .then(navItems=>{
+        if(!navItems) return null;
+
+        for(var i = 0, l = navItems.length; i < l; i++){
+          var item = navItems[i];
+          this.values[item.i18n] = item.title;
+          this.registry.push(this.defaultNamespace + this.keySeparator + item.i18n);
+        }
+
+        if(this.verbose){
+          gutil.log('navItems found:');
+          gutil.log(navItems)
+        }
+
+        return null;
+      });
+  }
+
+  /**
    * Takes a `target` hash and replace its empty
    * values with the `source` hash ones if they exist
    *
@@ -345,6 +381,8 @@ export class Parser{
   getExtension(path){
     return path.substr(path.lastIndexOf(".") + 1);
   }
+
+
 
   //--------- Steam functions
 
@@ -416,30 +454,15 @@ export class Parser{
     }
 
     //extract values from the aurelia application where possible
-
-    this.extractor.getNavFromRoutes(this.routesModuleId)
-    .then(navItems=>{
-      if(!navItems) return null;
-
-      for(i = 0, l = navItems.length; i < l; i++){
-        var item = navItems[i];
-        this.values[item.i18n] = item.title;
-        this.registry.push(this.defaultNamespace + this.keySeparator + item.i18n);
-      }
-
-      if(this.verbose){
-        gutil.log('navItems found:');
-        gutil.log(navItems)
-      }
-
-      return null;
-    })
-    .then(()=>{
-        for(i = 0, l = this.locales.length; i < l; i++){
-          this.generateTranslation(this.locales[i]);
-        }
+    if(this.extractor){
+      this.extractFromApp().then(()=>{
+        this.generateAllTranslations();
         cb();
-    });
+      });
+    }else{
+      this.generateAllTranslations();
+      cb();
+    }
 
   }
 }
