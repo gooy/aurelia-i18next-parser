@@ -13,17 +13,7 @@ export class AppExtractor{
    * Configure systemjs to work with the local application
    */
   constructor(appPath){
-    //prepare for use in windows
-    System.config({
-      "baseURL": "./",
-      "transpiler": 'babel',
-      "babelOptions": {
-        "stage": 0
-      },
-      "paths":{
-        "*": appPath+"/*.js"
-      }
-    });
+    this.appPath = appPath;
   }
 
   /**
@@ -34,6 +24,20 @@ export class AppExtractor{
    * @returns {Promise}
    */
   getNavFromRoutes(moduleId){
+
+    //prepare for use in windows
+
+    System.config({
+      "baseURL": "./",
+      "transpiler": 'babel',
+      "babelOptions": {
+        "stage": 0
+      },
+      "paths":{
+        "*": this.appPath+"/*.js"
+      }
+    });
+
     if(!moduleId) Promise.resolve(null);
     //get routes from the aurelia application
     return System.import(moduleId).then(m=>{
@@ -44,5 +48,6 @@ export class AppExtractor{
       }
       return navRoutes;
     });
+
   }
 }

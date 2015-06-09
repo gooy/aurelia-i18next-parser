@@ -30,21 +30,24 @@ var AppExtractor = (function () {
   function AppExtractor(appPath) {
     _classCallCheck(this, AppExtractor);
 
-    _System2["default"].config({
-      baseURL: "./",
-      transpiler: "babel",
-      babelOptions: {
-        stage: 0
-      },
-      paths: {
-        "*": appPath + "/*.js"
-      }
-    });
+    this.appPath = appPath;
   }
 
   _createClass(AppExtractor, [{
     key: "getNavFromRoutes",
     value: function getNavFromRoutes(moduleId) {
+
+      _System2["default"].config({
+        baseURL: "./",
+        transpiler: "babel",
+        babelOptions: {
+          stage: 0
+        },
+        paths: {
+          "*": this.appPath + "/*.js"
+        }
+      });
+
       if (!moduleId) Promise.resolve(null);
 
       return _System2["default"]["import"](moduleId).then(function (m) {

@@ -20,21 +20,24 @@ System.register(["systemjs", "config", "babel/polyfill", "core-js"], function (_
         function AppExtractor(appPath) {
           _classCallCheck(this, AppExtractor);
 
-          System.config({
-            baseURL: "./",
-            transpiler: "babel",
-            babelOptions: {
-              stage: 0
-            },
-            paths: {
-              "*": appPath + "/*.js"
-            }
-          });
+          this.appPath = appPath;
         }
 
         _createClass(AppExtractor, [{
           key: "getNavFromRoutes",
           value: function getNavFromRoutes(moduleId) {
+
+            System.config({
+              baseURL: "./",
+              transpiler: "babel",
+              babelOptions: {
+                stage: 0
+              },
+              paths: {
+                "*": this.appPath + "/*.js"
+              }
+            });
+
             if (!moduleId) Promise.resolve(null);
 
             return System["import"](moduleId).then(function (m) {
