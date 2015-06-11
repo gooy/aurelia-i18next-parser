@@ -16,4 +16,4 @@ module.exports.pkg = gulp.pkg = _.merge({
     packages: "jspm_packages",
     node_modules: "node_modules"
   }
-},require('package.json'));
+},require('./package.json'));

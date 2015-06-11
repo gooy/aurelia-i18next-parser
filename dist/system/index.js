@@ -1,7 +1,13 @@
 System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jquery", "./helpers", "path", "vinyl", "./app-extractor", "core-js"], function (_export) {
-  var through, gutil, _, fs, jsdom, $, hashFromString, mergeHash, replaceEmpty, transformText, path, File, AppExtractor, corejs, _classCallCheck, _createClass, Promise, PluginError, PLUGIN_NAME, Parser;
+  "use strict";
+
+  var through, gutil, _, fs, jsdom, $, hashFromString, mergeHash, replaceEmpty, transformText, path, File, AppExtractor, corejs, Promise, PluginError, PLUGIN_NAME, Parser;
+
+  var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
   _export("i18next", i18next);
+
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   function i18next(opts) {
     return new Parser(opts).parse();
@@ -35,12 +41,6 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
       corejs = _coreJs["default"];
     }],
     execute: function () {
-      "use strict";
-
-      _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
-
-      _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
       Promise = corejs.Promise;
       PluginError = gutil.PluginError;
       PLUGIN_NAME = "aurelia-i18next-parser";
@@ -313,10 +313,12 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
 
               var mergedTranslationsFile = new File({
                 path: locale + "/" + namespacePath,
+
                 contents: new Buffer(JSON.stringify(mergedTranslations["new"], null, 2))
               });
               var mergedOldTranslationsFile = new File({
                 path: locale + "/" + namespaceOldPath,
+
                 contents: new Buffer(JSON.stringify(mergedTranslations.old, null, 2))
               });
 
@@ -447,9 +449,9 @@ System.register(["through2", "gulp-util", "lodash", "graceful-fs", "jsdom", "jqu
               data = file.contents.toString();
             }
 
-            if (!data) {
-              return cb();
-            }data = this.parseTranslations(path, data).then(function (keys) {
+            if (!data) return cb();
+
+            data = this.parseTranslations(path, data).then(function (keys) {
               _this5.addToRegistry(keys);
 
               cb();

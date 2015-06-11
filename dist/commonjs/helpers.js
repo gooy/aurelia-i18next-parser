@@ -60,7 +60,7 @@ function mergeHash(source, target, old) {
 
   return {
     'new': target,
-    old: old
+    'old': old
   };
 }
 

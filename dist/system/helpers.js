@@ -1,4 +1,6 @@
 System.register([], function (_export) {
+  'use strict';
+
   _export('hashFromString', hashFromString);
 
   _export('mergeHash', mergeHash);
@@ -59,7 +61,7 @@ System.register([], function (_export) {
 
     return {
       'new': target,
-      old: old
+      'old': old
     };
   }
 
@@ -98,9 +100,7 @@ System.register([], function (_export) {
 
   return {
     setters: [],
-    execute: function () {
-      'use strict';
-    }
+    execute: function () {}
   };
 });
 //# sourceMappingURL=helpers.js.map

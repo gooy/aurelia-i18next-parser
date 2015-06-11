@@ -1,6 +1,5 @@
 import System from "systemjs";
 
-import "config";
 import "babel/polyfill";
 import "core-js";
 
@@ -27,26 +26,28 @@ export class AppExtractor{
 
     //prepare for use in windows
 
-    System.config({
-      "baseURL": "./",
-      "transpiler": 'babel',
-      "babelOptions": {
-        "stage": 0
-      },
-      "paths":{
-        "*": this.appPath+"/*.js"
-      }
-    });
-
-    if(!moduleId) Promise.resolve(null);
-    //get routes from the aurelia application
-    return System.import(moduleId).then(m=>{
-      var navRoutes = [];
-      for(var i = 0, l = m.routes.length; i < l; i++){
-        var route = m.routes[i];
-        if(route.nav) navRoutes.push(route);
-      }
-      return navRoutes;
+    System.import("config").then(m=>{
+      System.config({
+        "baseURL": "./",
+        "transpiler": 'babel',
+        "babelOptions": {
+          "stage": 0
+        },
+        "paths":{
+          "*": this.appPath+"/*.js"
+        }
+      });
+    }).then(()=>{
+      if(!moduleId) Promise.resolve(null);
+      //get routes from the aurelia application
+      return System.import(moduleId).then(m=>{
+        var navRoutes = [];
+        for(var i = 0, l = m.routes.length; i < l; i++){
+          var route = m.routes[i];
+          if(route.nav) navRoutes.push(route);
+        }
+        return navRoutes;
+      });
     });
 
   }
