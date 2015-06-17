@@ -40,14 +40,17 @@ export class AppExtractor{
 
     if(!moduleId) Promise.resolve(null);
     //get routes from the aurelia application
-    return System.import(moduleId).then(m=>{
-      var navRoutes = [];
-      for(var i = 0, l = m.routes.length; i < l; i++){
-        var route = m.routes[i];
-        if(route.nav) navRoutes.push(route);
-      }
-      return navRoutes;
+    return new Promise((resolve, reject) => {
+      return System.import(moduleId).then(m=>{
+        var navRoutes = [];
+        for(var i = 0, l = m.routes.length; i < l; i++){
+          var route = m.routes[i];
+          if(route.nav) navRoutes.push(route);
+        }
+        resolve(navRoutes);
+      });
     });
+
 
   }
 }

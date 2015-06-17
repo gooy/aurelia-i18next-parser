@@ -40,13 +40,15 @@ System.register(["systemjs", "config", "babel/polyfill", "core-js"], function (_
 
             if (!moduleId) Promise.resolve(null);
 
-            return System["import"](moduleId).then(function (m) {
-              var navRoutes = [];
-              for (var i = 0, l = m.routes.length; i < l; i++) {
-                var route = m.routes[i];
-                if (route.nav) navRoutes.push(route);
-              }
-              return navRoutes;
+            return new Promise(function (resolve, reject) {
+              return System["import"](moduleId).then(function (m) {
+                var navRoutes = [];
+                for (var i = 0, l = m.routes.length; i < l; i++) {
+                  var route = m.routes[i];
+                  if (route.nav) navRoutes.push(route);
+                }
+                resolve(navRoutes);
+              });
             });
           }
         }]);
